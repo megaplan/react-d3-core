@@ -35,6 +35,7 @@ export default class Grid extends Component {
     yRange: PropTypes.array,
     yScale: PropTypes.oneOf(['linear', 'identity', 'sqrt', 'pow', 'log', 'quantize', 'quantile', 'ordinal', 'time']).isRequired,
     yRangeRoundBands: PropTypes.object,
+    gridAxisLineStyle: PropTypes.object
   }
 
   render() {
@@ -55,7 +56,8 @@ export default class Grid extends Component {
       yDomain,
       yRange,
       yScale,
-    } = this.props;
+      gridAxisLineStyle,
+      } = this.props;
 
     var gridAxis;
     var t;
@@ -74,52 +76,54 @@ export default class Grid extends Component {
 
       // if grid axis don't pass customize ticks.
       gridAxis = <Axis
-        height= {height}
-        width= {width}
-        margins= {margins}
-        type= "gridx"
-        showAxis= {false}
-        gridAxisClassName= {gridAxisClassName}
-        rangeRoundBands= {xRangeRoundBands}
-        tickOrient= "bottom"
-        orient = "bottom"
-        outerTickSize= {0}
-        tickPadding= {10}
-        tickFormat= {null}
-        innerTickSize = {-tickSize}
-        proxy = {x}
-        domain = {xDomain}
-        range = {xRange}
-        scale = {xScale}
-        />
+        height={height}
+        width={width}
+        margins={margins}
+        type="gridx"
+        showAxis={false}
+        gridAxisClassName={gridAxisClassName}
+        rangeRoundBands={xRangeRoundBands}
+        tickOrient="bottom"
+        orient="bottom"
+        outerTickSize={0}
+        tickPadding={10}
+        tickFormat={null}
+        innerTickSize={-tickSize}
+        proxy={x}
+        domain={xDomain}
+        range={xRange}
+        scale={xScale}
+        gridAxisLineStyle={gridAxisLineStyle}
+      />
     } else if(type === 'y') {
       t = `translate(0, 0)`;
       var tickSize = width - margins.left - margins.right;
 
       // if grid axis don't pass customize ticks.
       gridAxis = <Axis
-        height= {height}
-        width= {width}
-        margins= {margins}
-        type= "gridy"
-        showAxis= {false}
-        gridAxisClassName= {gridAxisClassName}
-        rangeRoundBands= {yRangeRoundBands}
-        tickOrient= "left"
-        orient= "left"
-        outerTickSize= {0}
-        tickPadding= {10}
-        innerTickSize = {-tickSize}
-        tickFormat= {null}
-        proxy = {y}
-        scale = {yScale}
-        domain = {yDomain}
-        range = {yRange}
-        />
+        height={height}
+        width={width}
+        margins={margins}
+        type="gridy"
+        showAxis={false}
+        gridAxisClassName={gridAxisClassName}
+        rangeRoundBands={yRangeRoundBands}
+        tickOrient="left"
+        orient="left"
+        outerTickSize={0}
+        tickPadding={10}
+        innerTickSize={-tickSize}
+        tickFormat={null}
+        proxy={y}
+        scale={yScale}
+        domain={yDomain}
+        range={yRange}
+        gridAxisLineStyle={gridAxisLineStyle}
+      />
     }
 
     return (
-      <g transform = {t}>
+      <g transform={t}>
         {gridAxis}
       </g>
     )

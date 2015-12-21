@@ -11,7 +11,7 @@ import ReactFauxDOM from 'react-faux-dom';
 import {scale} from '../utils/scale';
 
 export default class Axis extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
@@ -20,7 +20,8 @@ export default class Axis extends Component {
     rangeRoundBands: null,
     domain: null,
     tickFormat: null,
-    tickOrient: null
+    tickOrient: null,
+    wordWrap: false
   }
 
   static PropTypes = {
@@ -30,7 +31,7 @@ export default class Axis extends Component {
     tickOrient: PropTypes.oneOf(['top', 'bottom', 'left', 'right']),
   }
 
-  _mkTickAxis () {
+  _mkTickAxis() {
     const {
       type,
       tickOrient,
@@ -39,7 +40,7 @@ export default class Axis extends Component {
       innerTickSize,
       outerTickSize,
       ticks,
-    } = this.props;
+      } = this.props;
 
     var func = d3.svg.axis();
 
@@ -67,26 +68,46 @@ export default class Axis extends Component {
 
   }
 
-  _mkScale () {
+  _mkScale() {
 
-    const{
+    const {
       type
-    } = this.props;
+      } = this.props;
 
     var func = scale(this.props);
 
     return func;
   }
 
-  render () {
+  wrap(text, width) {
+    text.each(function() {
+      var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+      while(word = words.pop()) {
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    });
+  }
+
+
+  render() {
 
     const {
       showAxis,
       gridAxisClassName,
       axisClassName,
       type,
-      style
-    } = this.props;
+      style,
+      rangeRoundBands,
+      wordWrap,
+      gridAxisLineStyle
+      } = this.props;
 
     var axisGroup = ReactFauxDOM.createElement('g');
 
@@ -114,27 +135,51 @@ export default class Axis extends Component {
       }
     }
 
+    var gridAxixFill = 'none',
+      gridAxixStroke = '#000',
+      gridAxixStrokeWidth = '1.5px',
+      gridAxixOpacity = .2;
+
+    if(gridAxisLineStyle) {
+      if(gridAxisLineStyle.gridAxixFill) {
+        gridAxixFill = gridAxisLineStyle.gridAxixFill
+      }
+      if(gridAxisLineStyle.gridAxixStroke) {
+        gridAxixStroke = gridAxisLineStyle.gridAxixStroke
+      }
+      if(gridAxisLineStyle.gridAxixStrokeWidth) {
+        gridAxixStrokeWidth = gridAxisLineStyle.gridAxixStrokeWidth
+      }
+      if(gridAxisLineStyle.gridAxixOpacity) {
+        gridAxixOpacity = gridAxisLineStyle.gridAxixOpacity
+      }
+    }
+
     // basic styles
     axisDom.selectAll('.axis path')
-      .style('fill', 'none')
-      .style('stroke', '#000')
+      .style('fill', gridAxixFill)
+      .style('stroke', gridAxixStroke)
       .style('shape-rendering', 'crispEdges');
 
     axisDom.selectAll('.axis line')
-      .style('fill', 'none')
-      .style('stroke', '#000')
+      .style('fill', gridAxixFill)
+      .style('stroke', gridAxixStroke)
       .style('shape-rendering', 'crispEdges');
 
     axisDom.selectAll('.grid-axis line')
-      .style('opacity', .2)
-      .style('fill', 'none')
-      .style('stroke', '#000')
-      .style('stroke-width', '1.5px')
+      .style('opacity', gridAxixOpacity)
+      .style('fill', gridAxixFill)
+      .style('stroke', gridAxixStroke)
+      .style('stroke-width', gridAxixStrokeWidth)
 
     axisDom.selectAll('.axis path')
       .style('display', 'none')
 
     var axisText = axisDom.selectAll('.axis text')
+
+    if(wordWrap) {
+      axisDom.selectAll('.axis text').call(this.wrap)
+    }
 
     if(style) {
       for(var key in style) {

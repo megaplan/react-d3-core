@@ -11,7 +11,7 @@ import Label from './label';
 import CommonProps from '../commonProps';
 
 export default class Xaxis extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
@@ -44,7 +44,9 @@ export default class Xaxis extends Component {
     xTickPadding: PropTypes.number,
     xTickFormat: PropTypes.func,
     xTicks: PropTypes.array,
-    style: PropTypes.object
+    style: PropTypes.object,
+    xWordWrap: PropTypes.bool,
+    xGridAxisLineStyle: PropTypes.object
   }
 
   render() {
@@ -69,8 +71,10 @@ export default class Xaxis extends Component {
       xLabel,
       xLabelPosition,
       labelOffset,
-      style
-    } = this.props;
+      style,
+      xWordWrap,
+      xGridAxisLineStyle
+      } = this.props;
 
     var t;
     var axisLabel;
@@ -79,49 +83,51 @@ export default class Xaxis extends Component {
       xRange = [0, width - margins.left - margins.right];
     }
 
-    if (xOrient === 'bottom') {
+    if(xOrient === 'bottom') {
       // x - bottom
       t = `translate(0, ${height - margins.bottom - margins.top})`;
-    } else if (xOrient === 'top'){
+    } else if(xOrient === 'top') {
       // x - top
       t = `translate(0, 0)`;
     }
 
     if(xLabel) {
       axisLabel = <Label
-        height= {height}
-        width= {width}
-        margins= {margins}
-        labelTitle= {xLabel}
-        labelPosition= {xLabelPosition}
-        labelOffset= {labelOffset}
-        rangeRoundBands= {xRangeRoundBands}
-        />
+        height={height}
+        width={width}
+        margins={margins}
+        labelTitle={xLabel}
+        labelPosition={xLabelPosition}
+        labelOffset={labelOffset}
+        rangeRoundBands={xRangeRoundBands}
+      />
     }
 
     return (
-      <g transform= {t}>
+      <g transform={t}>
         <Axis
-          height= {height}
-          width= {width}
-          margins= {margins}
-          showAxis= {showXAxis}
-          axisClassName= {xAxisClassName}
-          rangeRoundBands= {xRangeRoundBands}
-          type = "x"
-          proxy = {x}
-          domain = {xDomain}
-          range = {xRange}
-          scale = {xScale}
-          orient = {xOrient}
-          tickOrient = {xTickOrient}
-          tickFormat = {xTickFormat}
-          tickPadding = {xTickPadding}
-          innerTickSize = {xInnerTickSize}
-          outerTickSize = {xOuterTickSize}
-          ticks = {xTicks}
-          style = {style}
-          />
+          height={height}
+          width={width}
+          margins={margins}
+          showAxis={showXAxis}
+          axisClassName={xAxisClassName}
+          rangeRoundBands={xRangeRoundBands}
+          type="x"
+          proxy={x}
+          domain={xDomain}
+          range={xRange}
+          scale={xScale}
+          orient={xOrient}
+          tickOrient={xTickOrient}
+          tickFormat={xTickFormat}
+          tickPadding={xTickPadding}
+          innerTickSize={xInnerTickSize}
+          outerTickSize={xOuterTickSize}
+          ticks={xTicks}
+          style={style}
+          wordWrap={xWordWrap}
+          gridAxisLineStyle={xGridAxisLineStyle}
+        />
         {axisLabel}
       </g>
     )
