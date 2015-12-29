@@ -104,7 +104,6 @@ export default class Axis extends Component {
       axisClassName,
       type,
       style,
-      rangeRoundBands,
       wordWrap,
       gridAxisLineStyle
       } = this.props;
