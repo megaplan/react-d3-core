@@ -47,6 +47,7 @@ export default class Xaxis extends Component {
     style: PropTypes.object,
     xWordWrap: PropTypes.bool,
     xGridAxisLineStyle: PropTypes.object
+    xRotateLabel: PropTypes.bool
   }
 
   render() {
@@ -73,7 +74,8 @@ export default class Xaxis extends Component {
       labelOffset,
       style,
       xWordWrap,
-      xGridAxisLineStyle
+      xGridAxisLineStyle,
+      xRotateLabel
       } = this.props;
 
     var t;
@@ -127,6 +129,7 @@ export default class Xaxis extends Component {
           style={style}
           wordWrap={xWordWrap}
           gridAxisLineStyle={xGridAxisLineStyle}
+          rotateLabel={xRotateLabel}
         />
         {axisLabel}
       </g>

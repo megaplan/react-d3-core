@@ -11,6 +11,7 @@ import ReactFauxDOM from 'react-faux-dom';
 import {scale} from '../utils/scale';
 
 export default class Axis extends Component {
+
   constructor(props) {
     super(props);
   }
@@ -21,7 +22,8 @@ export default class Axis extends Component {
     domain: null,
     tickFormat: null,
     tickOrient: null,
-    wordWrap: false
+    wordWrap: false,
+    rotateLabel: false
   }
 
   static PropTypes = {
@@ -39,7 +41,7 @@ export default class Axis extends Component {
       tickPadding,
       innerTickSize,
       outerTickSize,
-      ticks,
+      ticks
       } = this.props;
 
     var func = d3.svg.axis();
@@ -79,19 +81,49 @@ export default class Axis extends Component {
     return func;
   }
 
-  wrap(text, width) {
+  wrap(text, maxWidth, _class) {
     text.each(function() {
       var text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
         word,
         lineNumber = 0,
         lineHeight = 1.1, // ems
         y = text.attr("y"),
         dy = parseFloat(text.attr("dy")),
+        textLine = text.text(),
+        words = textLine.split(/\s+/),
         tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-      while(word = words.pop()) {
-        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      const c = document.createElement("canvas");
+      const ctx = c.getContext("2d");
+      ctx.font = "1em";
+      const width = Math.round(ctx.measureText(textLine).width);
+      var wordLines = [];
+      var wordLine = "";
+      if(maxWidth < width) {
+        words.forEach((_word) => {
+          const wordWidth = Math.round(ctx.measureText(_word + " ").width)
+          if(maxWidth < wordWidth) {
+            maxWidth = wordWidth
+          }
+        })
+        for(let i = 0; i <= words.length; i++) {
+          const word = words[i]
+          if(word === undefined) {
+            wordLines.push(wordLine)
+            break
+          }
+          if(Math.round(ctx.measureText(`${wordLine} ${word}`).width) <= maxWidth) {
+            wordLine += ` ${word}`
+          } else {
+            wordLines.push(wordLine)
+            wordLine = word
+          }
+        }
+      } else {
+        wordLines.push(textLine)
       }
+      wordLines.forEach((word) => {
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      })
     });
   }
 
@@ -105,7 +137,10 @@ export default class Axis extends Component {
       type,
       style,
       wordWrap,
-      gridAxisLineStyle
+      gridAxisLineStyle,
+      width,
+      margins,
+      rotateLabel
       } = this.props;
 
     var axisGroup = ReactFauxDOM.createElement('g');
@@ -169,20 +204,26 @@ export default class Axis extends Component {
       .style('opacity', gridAxixOpacity)
       .style('fill', gridAxixFill)
       .style('stroke', gridAxixStroke)
-      .style('stroke-width', gridAxixStrokeWidth)
+      .style('stroke-width', gridAxixStrokeWidth);
 
     axisDom.selectAll('.axis path')
       .style('display', 'none')
 
-    var axisText = axisDom.selectAll('.axis text')
-
-    if(wordWrap) {
-      axisDom.selectAll('.axis text').call(this.wrap)
-    }
+    var axisText = axisDom.selectAll('.axis text');
 
     if(style) {
       for(var key in style) {
         axisText.style(key, style[key]);
+      }
+    }
+
+    if(wordWrap) {
+      var maxTextWith = (width - margins.left - margins.right) / axisDom.selectAll('.axis text')[0].length - 1;
+      axisDom.selectAll('.axis text').call(this.wrap, maxTextWith, this);
+      if(rotateLabel) {
+        axisDom.selectAll('.axis text').attr("transform", function(d) {
+          return "rotate(45)"
+        }).style('text-anchor', 'left')
       }
     }
 
