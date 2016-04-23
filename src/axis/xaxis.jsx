@@ -46,7 +46,7 @@ export default class Xaxis extends Component {
     xTicks: PropTypes.array,
     style: PropTypes.object,
     xWordWrap: PropTypes.bool,
-    xGridAxisLineStyle: PropTypes.object
+    xGridAxisLineStyle: PropTypes.object,
     xRotateLabel: PropTypes.bool
   }
 

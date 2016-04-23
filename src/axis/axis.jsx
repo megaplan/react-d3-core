@@ -218,7 +218,7 @@ export default class Axis extends Component {
     }
 
     if(wordWrap) {
-      var maxTextWith = (width - margins.leftPadding - margins.right) / axisDom.selectAll('.axis text')[0].length - 1;
+      var maxTextWith = (width - margins.left - margins.right) / axisDom.selectAll('.axis text')[0].length - 10;
       axisDom.selectAll('.axis text').call(this.wrap, maxTextWith, this);
       if(rotateLabel) {
         axisDom.selectAll('.axis text').attr("transform", function(d) {
