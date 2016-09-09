@@ -11,7 +11,7 @@ import Label from './label';
 import CommonProps from '../commonProps';
 
 export default class Yaxis extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
@@ -69,8 +69,9 @@ export default class Yaxis extends Component {
       yLabelPosition,
       labelOffset,
       showYAxis,
-      style
-    } = this.props;
+      style,
+      yGridAxisLineStyle
+      } = this.props;
 
     var t;
     var axisLabel;
@@ -79,49 +80,50 @@ export default class Yaxis extends Component {
       yRange = [height - margins.top - margins.bottom, 0];
     }
 
-    if (yOrient === 'right') {
+    if(yOrient === 'right') {
       // y - right
       t = `translate(${width - margins.right - margins.left}, 0)`;
-    } else if (yOrient === 'left'){
+    } else if(yOrient === 'left') {
       // y - left
       t = `translate(0, 0)`;
     }
 
     if(yLabel) {
       axisLabel = <Label
-        height= {height}
-        width= {width}
-        margins= {margins}
-        labelTitle= {yLabel}
-        labelPosition= {yLabelPosition}
-        labelOffset= {labelOffset}
+        height={height}
+        width={width}
+        margins={margins}
+        labelTitle={yLabel}
+        labelPosition={yLabelPosition}
+        labelOffset={labelOffset}
       />
     }
 
 
     return (
-      <g transform= {t}>
+      <g transform={t}>
         <Axis
-          height= {height}
-          width= {width}
-          margins= {margins}
-          showAxis= {showYAxis}
-          axisClassName= {yAxisClassName}
-          rangeRoundBands= {yRangeRoundBands}
-          type = "y"
-          proxy = {y}
-          domain = {yDomain}
-          range = {yRange}
-          scale = {yScale}
-          orient = {yOrient}
-          tickOrient = {yTickOrient}
-          tickFormat = {yTickFormat}
-          tickPadding = {yTickPadding}
-          innerTickSize = {yInnerTickSize}
-          outerTickSize = {yOuterTickSize}
-          ticks = {yTicks}
-          style = {style}
-          />
+          height={height}
+          width={width}
+          margins={margins}
+          showAxis={showYAxis}
+          axisClassName={yAxisClassName}
+          rangeRoundBands={yRangeRoundBands}
+          type="y"
+          proxy={y}
+          domain={yDomain}
+          range={yRange}
+          scale={yScale}
+          orient={yOrient}
+          tickOrient={yTickOrient}
+          tickFormat={yTickFormat}
+          tickPadding={yTickPadding}
+          innerTickSize={yInnerTickSize}
+          outerTickSize={yOuterTickSize}
+          ticks={yTicks}
+          style={style}
+          gridAxisLineStyle={yGridAxisLineStyle}
+        />
         {axisLabel}
       </g>
     )
